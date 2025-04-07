@@ -1,89 +1,69 @@
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { SocialIcon } from 'react-social-icons';
-import Popup from './popup';  // Import the Popup component
+import Popup from './popup';
 
 const CountdownTimer = () => {
-  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-  const [showPopup, setShowPopup] = useState(true); // Control popup visibility
+  const [showPopup, setShowPopup] = useState(true);
   const audioRef = useRef(null);
 
   useEffect(() => {
-    const launchDate = new Date('2025-04-05T19:00:00');
-    const timer = setInterval(() => {
-      const now = new Date();
-      const difference = launchDate.getTime() - now.getTime();
-
-      if (difference <= 0) {
-        clearInterval(timer);
-        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-        return;
-      }
-
-      const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((difference % (1000 * 60)) / 1000);
-
-      setTimeLeft({ days, hours, minutes, seconds });
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, []);
-
-  // Attach a one-time event listener for a user gesture to start audio playback
-  useEffect(() => {
     const handleUserGesture = () => {
       if (audioRef.current) {
-        audioRef.current.play().catch(error => {
+        audioRef.current.play().catch((error) => {
           console.log('Playback error:', error);
         });
-        // Remove the event listener after the first successful click
         window.removeEventListener('click', handleUserGesture);
       }
     };
+
     window.addEventListener('click', handleUserGesture);
     return () => window.removeEventListener('click', handleUserGesture);
   }, []);
 
   return (
-    <div className="min-h-screen bg-black flex flex-col items-center justify-center p-4 overflow-hidden">
-      {/* Audio element to play music on load (hidden from view) */}
+    <div className="h-screen bg-black flex flex-col justify-between items-center p-4 text-center font-helvetica overflow-hidden">
+      {/* Hidden audio */}
       <audio ref={audioRef} src="/Runaway-ye.mp3" style={{ display: 'none' }} />
-      
-      {/* Show Popup on Page Load */}
+
+      {/* Popup */}
       {showPopup && <Popup onClose={() => setShowPopup(false)} />}
 
-      {/* Logo Section */}
-      <div className="mb-8 sm:mb-12 w-full flex justify-center items-center">
-        <img src="/Soko Logo-01.png" alt="Brand Logo" className="w-3/4 sm:w-1/2 md:w-2/5 lg:w-1/3 max-w-[320px] min-w-[180px] h-auto" />
-      </div>
+      {/* Main content */}
+      <div className="flex flex-col justify-center items-center space-y-3 flex-grow">
+        {/* Logo */}
+        <img
+          src="/Soko Logo-01.png"
+          alt="Brand Logo"
+          className="w-[180px] sm:w-[220px] md:w-[260px] lg:w-[280px] h-auto transition-transform duration-300 hover:scale-105"
+        />
 
-      {/* Countdown Timer */}
-      <div className="w-full max-w-[500px]">
-        <div className="grid grid-cols-4 gap-2 sm:gap-4 text-center">
-          {[
-            { label: 'Days', value: timeLeft.days },
-            { label: 'Hours', value: timeLeft.hours },
-            { label: 'Minutes', value: timeLeft.minutes },
-            { label: 'Seconds', value: timeLeft.seconds },
-          ].map(({ label, value }) => (
-            <div key={label} className="bg-white/10 rounded-lg p-3 sm:p-4">
-              <div className="text-3xl sm:text-4xl md:text-6xl font-bold text-white mb-1 sm:mb-2 font-helvetica">
-                {value}
-              </div>
-              <div className="text-white/60 text-xs sm:text-sm uppercase tracking-wider">{label}</div>
-            </div>
-          ))}
+        {/* Brand message */}
+        <div className="text-white/90 max-w-md px-4 space-y-3">
+          <p className="text-sm sm:text-base md:text-lg font-light leading-relaxed tracking-wide">
+            Rooted in Calcutta. Influenced by hip hop. Built for the culture.
+          </p>
+          <p className="text-sm sm:text-base md:text-lg font-light leading-relaxed tracking-wide">
+            We’re a clothing brand creating space for the city’s boldest voices. Premium streetwear that speaks for itself, and a community that moves together.
+          </p>
+          <p className="text-sm sm:text-base md:text-lg font-light leading-relaxed tracking-wide">
+            This is style with purpose. Welcome to the scene.
+          </p>
         </div>
       </div>
 
-      {/* Social Media Links */}
-      <div className="mt-12 flex space-x-6">
-        <SocialIcon 
-          url="https://www.instagram.com/sokoindia/" 
-          style={{ height: 50, width: 50 }} 
+      {/* Instagram section */}
+      <div className="flex flex-col items-center text-white/70 text-xs sm:text-sm md:text-base tracking-wider space-y-1 mb-6">
+        <p>Site’s still cookin’</p>
+        <p>But the heat’s live on the gram.</p>
+        <p>Tap in, check the drops, hit the DMs to cop.</p>
+
+        {/* Instagram icon */}
+        <SocialIcon
+          url="https://www.instagram.com/sokoindia/"
+          style={{ height: 40, width: 40 }}
           bgColor="transparent"
           fgColor="#fff"
+          className="mt-3 transition-transform duration-300 hover:scale-110"
         />
       </div>
     </div>
@@ -91,80 +71,3 @@ const CountdownTimer = () => {
 };
 
 export default CountdownTimer;
-
-
-
-// import { useState, useEffect } from 'react';
-// import { SocialIcon } from 'react-social-icons';
-// import Popup from './popup';  // Import the Popup component
-
-// const CountdownTimer = () => {
-//   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-//   const [showPopup, setShowPopup] = useState(true); // Control popup visibility
-
-//   useEffect(() => {
-//     const launchDate = new Date('2025-03-15T00:00:00');
-//     const timer = setInterval(() => {
-//       const now = new Date();
-//       const difference = launchDate.getTime() - now.getTime();
-
-//       if (difference <= 0) {
-//         clearInterval(timer);
-//         setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-//         return;
-//       }
-
-//       const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-//       const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-//       const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-//       const seconds = Math.floor((difference % (1000 * 60)) / 1000);
-
-//       setTimeLeft({ days, hours, minutes, seconds });
-//     }, 1000);
-
-//     return () => clearInterval(timer);
-//   }, []);
-
-//   return (
-//     <div className="min-h-screen bg-black flex flex-col items-center justify-center p-4 overflow-hidden">
-//       {/* Show Popup on Page Load */}
-//       {showPopup && <Popup onClose={() => setShowPopup(false)} />}
-
-//       {/* Logo Section */}
-//       <div className="mb-8 sm:mb-12 w-full flex justify-center items-center">
-//         <img src="/Soko Logo-01.png" alt="Brand Logo" className="w-3/4 sm:w-1/2 md:w-2/5 lg:w-1/3 max-w-[320px] min-w-[180px] h-auto" />
-//       </div>
-
-//       {/* Countdown Timer */}
-//       <div className="w-full max-w-[500px]">
-//         <div className="grid grid-cols-4 gap-2 sm:gap-4 text-center">
-//           {[
-//             { label: 'Days', value: timeLeft.days },
-//             { label: 'Hours', value: timeLeft.hours },
-//             { label: 'Minutes', value: timeLeft.minutes },
-//             { label: 'Seconds', value: timeLeft.seconds },
-//           ].map(({ label, value }) => (
-//             <div key={label} className="bg-white/10 rounded-lg p-3 sm:p-4">
-//               <div className="text-3xl sm:text-4xl md:text-6xl font-bold text-white mb-1 sm:mb-2 font-helvetica">
-//                 {value}
-//               </div>
-//               <div className="text-white/60 text-xs sm:text-sm uppercase tracking-wider">{label}</div>
-//             </div>
-//           ))}
-//         </div>
-//       </div>
-
-//       {/* Social Media Links */}
-//       <div className="mt-12 flex space-x-6">
-//         <SocialIcon 
-//           url="https://www.instagram.com/sokoindia/" 
-//           style={{ height: 50, width: 50 }} 
-//           bgColor="transparent"
-//           fgColor="#fff"
-//         />
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default CountdownTimer;
